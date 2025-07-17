@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+from .Model.auth_model import Auth_Session_Model
+
+
