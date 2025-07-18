@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 
 from .Model.auth_model import Auth_Session_Model
 from .Model.student_model import Student_Model
+from .forms import Student_forms
 
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login,logout as auth_logout
@@ -39,13 +40,38 @@ def logout_user(request):
 
 
 def student_add(request):
-    pass
+    if request.method == 'POST':
+        form =Student_forms(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dash')
+    else:
+        form =Student_forms()
+    return render(request, 'student_app/add.html', {'form': form})
+        
+    
 def student_update(request,pk):
-    pass
+    student =get_object_or_404(Student_Model,pk=pk)
+    if request.method == 'POST':
+        update_form =Student_forms(request.POST, instance=student)
+        if update_form.is_valid():
+            update_form.save()
+            return redirect('dash')
+    else:
+        form =Student_forms(instance=student)
+    return render(request,'student_app/update.html',{'form': form, 'students': student })
 
 def student_delete(request,pk):
-    pass
+    student =get_object_or_404(Student_Model,pk=pk)
+    
+    if request.method == 'POST':
+        student.delete()
+        return redirect('dash')
+    return render(request,'student_app/delete.html', { 'students':student})
 
+def student_view(request,pk ):
+    student =get_object_or_404(Student_Model,pk=pk)
+    return render(request,'student_app/view.html',{'students':student})
 
 def dashboard(request):
     if 'user_id' not in  request.session:
