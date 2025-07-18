@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 
 from .Model.auth_model import Auth_Session_Model
+from .Model.student_model import Student_Model
 
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login,logout as auth_logout
@@ -37,8 +38,21 @@ def logout_user(request):
 
 
 
+def student_add(request):
+    pass
+def student_update(request,pk):
+    pass
+
+def student_delete(request,pk):
+    pass
+
 
 def dashboard(request):
     if 'user_id' not in  request.session:
+        
         return redirect('logi')
-    return render(request,'student_app/dashboard.html')
+    
+    students=Student_Model.objects.all()
+    return render(request,'student_app/dashboard.html',{
+        'student':students
+        } )
