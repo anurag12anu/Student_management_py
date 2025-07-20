@@ -22,10 +22,42 @@
         <p class="lead text-muted">You're successfully logged in!</p>
       </div>
 
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Students</h5>
+              <p class="card-text">{{ total_student }}</p>
+            </div>
+          </div>
+        </div>
+        {% for branch, count in branch_count.items %}
+        <div class="col-md-4">
+          <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+              <h5 class="card-title">{{ branch }} Branch</h5>
+              <p class="card-text">{{ count }}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Search form -->
+      <form method="get" class="mb-4">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search name or branch"
+          class="form-control"
+          value="{{ request.GET.q }}"
+        />
+      </form>
+
       <!-- Add Button -->
-      <a href="{% url 'st_add' %}" class="btn btn-success mb-3"
-        >Add Student +</a
-      >
+      <a href="{% url 'st_add' %}" class="btn btn-success mb-3">
+        Add Student +
+      </a>
 
       <!-- Student table -->
       <div class="table-responsive">
@@ -40,25 +72,34 @@
             </tr>
           </thead>
           <tbody>
-            {% for student in student %}
+            {% for students in student %}
             <tr>
-              <td>{{ student.name }}</td>
-              <td>{{ student.email }}</td>
-              <td>{{ student.contact }}</td>
-              <td>{{ student.branch }}</td>
+              <td>{{ students.name }}</td>
+              <td>{{ students.email }}</td>
+              <td>{{ students.contact }}</td>
+              <td>{{ students.branch }}</td>
               <td>
                 <a
-                  href="{% url 'st_update' student.id %}"
+                  href="{% url 'st_update' students.id %}"
                   class="btn btn-sm btn-primary me-1"
                   >Edit</a
                 >
-
                 <a
-                  href="{% url 'st_delete' student.id %}"
+                  href="{% url 'st_delete' students.id %}"
                   class="btn btn-sm btn-danger me-1"
                   >Delete</a
                 >
-                <a href="{% url 'st_view' student.id %}" class="btn btn-sm btn-info text-white">View</a>
+                <a
+                  href="{% url 'st_view' students.id %}"
+                  class="btn btn-sm btn-info text-white"
+                  >View</a
+                >
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-muted">
+                No students found.
               </td>
             </tr>
             {% endfor %}

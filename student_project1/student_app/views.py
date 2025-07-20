@@ -7,6 +7,7 @@ from .forms import Student_forms
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login,logout as auth_logout
 from django.http import HttpResponse
+from django.db.models import Count,Q
 
 
 
@@ -78,7 +79,20 @@ def dashboard(request):
         
         return redirect('logi')
     
-    students=Student_Model.objects.all()
+    query=request.GET.get("q","")
+    
+    students= Student_Model.objects.filter(
+        Q(name_icontains=query)| Q(branch_icontains=query)
+    ) if query else Student_Model.objects.all()
+    
+    total_students = students.count()
+    branch_counts = students.values('branch').annotate(count=Count('branch'))
+    branch_dict = {b['branch']: b['count'] for b in branch_counts}
+
+
     return render(request,'student_app/dashboard.html',{
-        'student':students
+        'student':students,
+        'total_student':total_students,
+        'branch_count':branch_dict,
+        'request':request
         } )
