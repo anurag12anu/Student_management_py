@@ -62,6 +62,8 @@ def student_update(request,pk):
         form =Student_forms(instance=student)
     return render(request,'student_app/update.html',{'form': form, 'students': student })
 
+
+
 def student_delete(request,pk):
     student =get_object_or_404(Student_Model,pk=pk)
     
@@ -70,9 +72,13 @@ def student_delete(request,pk):
         return redirect('dash')
     return render(request,'student_app/delete.html', { 'students':student})
 
+
+
 def student_view(request,pk ):
     student =get_object_or_404(Student_Model,pk=pk)
     return render(request,'student_app/view.html',{'students':student})
+
+
 
 def dashboard(request):
     if 'user_id' not in  request.session:
@@ -82,7 +88,7 @@ def dashboard(request):
     query=request.GET.get("q","")
     
     students= Student_Model.objects.filter(
-        Q(name_icontains=query)| Q(branch_icontains=query)
+        Q(name__icontains=query)| Q(branch__icontains=query)
     ) if query else Student_Model.objects.all()
     
     total_students = students.count()
